@@ -106,7 +106,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	//   `spec_version`, and `authoring_version` are the same between Wasm and native.
 	// This value is set to 100 to notify Polkadot-JS App (https://polkadot.js.org/apps) to use
 	//   the compatible custom types.
-	spec_version: 100,
+	spec_version: 106,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -270,6 +270,13 @@ impl pallet_sudo::Config for Runtime {
 	type RuntimeCall = RuntimeCall;
 }
 
+impl pallet_utility::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type RuntimeCall = RuntimeCall;
+	type PalletsOrigin = OriginCaller;
+	type WeightInfo = pallet_utility::weights::SubstrateWeight<Runtime>;
+}
+
 /// Configure the pallet-template in pallets/template.
 impl pallet_template::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
@@ -282,13 +289,9 @@ pub enum FilterRuntimeCall {}
 impl frame_support::traits::Contains<RuntimeCall> for FilterRuntimeCall {
 	fn contains(call: &RuntimeCall) -> bool {
 		match *call {
-            RuntimeCall::Assets(AssetsCall::transfer { .. }) => true,
-			RuntimeCall::Assets(AssetsCall::transfer_approved { .. }) => true,
-			RuntimeCall::Assets(AssetsCall::freeze_asset { .. }) => true,
-			RuntimeCall::Assets(AssetsCall::force_transfer { .. }) => true,
-			RuntimeCall::Balances(BalancesCall::transfer_allow_death { .. }) => true,
-			RuntimeCall::Balances(BalancesCall::force_transfer { .. }) => true,
-            _ => true,
+            // RuntimeCall::Assets(AssetsCall::contract_asset_transfer_from { .. }) => true,
+			// RuntimeCall::Balances(BalancesCall::contract_balance_transfer_from { .. }) => true,
+            _ => false,
         }
 	}
 }
@@ -350,6 +353,7 @@ construct_runtime!(
 		Contracts: pallet_contracts,
 		Assets: pallet_assets,
 		RandomnessCollectiveFlip: pallet_insecure_randomness_collective_flip,
+		Utility: pallet_utility,
 	}
 );
 
