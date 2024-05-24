@@ -18,6 +18,9 @@ members = [
 panic = "unwind"
 
 [workspace.dependencies]
+clap = { version = "4.0.9", features = ["derive"] }
+futures = { version = "0.3.21", features = ["thread-pool"]}
+
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false, features = ["derive"] }
 scale-info = { version = "2.5.0", default-features = false, features = ["derive"] }
 
